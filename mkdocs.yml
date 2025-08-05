@@ -69,14 +69,6 @@ nav:
   # - 主页: index.md
   - MKdocs中文教程:
       - 许可声明: blog/MIT.md
-      - MKdocs教程(三部曲):
-          - 0.Mkdocs教程前言: blog/Mkdocs/mkfirst.md
-          - 1.利用Mkdocs部署静态网页: blog/Mkdocs/mkdocs1.md
-          - 2.Mkdocs配置说明(mkdocs.yml): blog/Mkdocs/mkdocs2.md
-          - 3.解决Github Pages部署mkdocs自定义域名失效的问题: blog/Mkdocs/mkdocs3.md
-      - Mkdocs美化/补充:
-          - 添加Mkdocs博客: blog/Mkdocs/mkdocsblog.md
-          - 如何给MKdocs添加友链: blog/Mkdocs/linktech.md
   - 建设MKdocs技能指北:
       - Markdown:
           - Markdown指南: develop/Markdown/markdown.md
