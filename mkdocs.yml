@@ -68,6 +68,7 @@ repo_name: Mkdocs-Wcowin # 右上角的名字
 nav:
   - 主页: index.md
   - 标签: tag.md
+  - 分类: categories/
   - 留言板: liuyanban.md
   - 博客:
       - index: blog/index.md
