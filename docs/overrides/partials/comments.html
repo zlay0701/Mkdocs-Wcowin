@@ -27,7 +27,22 @@
 <!-- 如何取值
 {{page.meta}}
  -->
-{% if page.meta.comments %}
+<!-- 转换后的值为首字母大写的字符串：True → "True"，False → "False"。 -->
+{% if page.meta.comments is defined %}
+  {% set comment_enabled = page.meta.comments %}
+{% endif %}
+{% if page.meta.comment is defined and page.meta.comment.enable is defined %}
+  {% set comment_enabled = page.meta.comment.enable %}
+{% endif %}
+{% if page.meta.comment is defined and not page.meta.comment.enable is defined %}
+  {% set comment_enabled = page.meta.comment %}
+{% endif %}
+
+{% if not comment_enabled  is defined %}
+  {% set comment_enabled = True %}
+{% endif %}
+
+{% if comment_enabled %}
   <!-- <h2 id="__comments">{{ lang.t("meta.comments") }}</h2> -->
   <!-- Insert generated snippet here -->
   <script src="https://giscus.app/client.js"
