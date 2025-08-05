@@ -134,9 +134,7 @@ ____    __    ____  ______   ______   ____    __    ____  __  .__   __.
 
 <!-- <strong>推荐文章:material-book:</strong>
 
-  - [利用Mkdocs部署静态网页至GitHub pages](blog/Mkdocs/mkdocs1.md)
-  - [Mkdocs部署配置说明(mkdocs.yml)](blog/Mkdocs/mkdocs2.md)
-  - [网站添加Mkdocs博客](blog/Mkdocs/mkdocsblog.md)
+  - [HelloWorld](blog/posts/HelloWorld.md)
   - [Blogger](blog/index.md) -->
 
 
@@ -148,9 +146,7 @@ ____    __    ____  ______   ______   ____    __    ____  __  .__   __.
     ---
 
     - [Mkdocs视频教程](https://space.bilibili.com/1407028951/lists/4566631?type=series){target=“_blank”}(Bilibili)
-    - [部署静态网页至GitHub pages](blog/Mkdocs/mkdocs1.md)
-    - [Mkdocs部署配置说明(mkdocs.yml)](blog/Mkdocs/mkdocs2.md)
-    - [网站添加Mkdocs博客](blog/Mkdocs/mkdocsblog.md)
+    - [HelloWorld](blog/posts/HelloWorld.md)
 
 
 
