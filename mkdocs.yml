@@ -230,6 +230,14 @@ plugins:
       pagination_url_format: "page/{page}"
       authors_file: "{blog}/.authors.yml" #作者信息
   - tags
+  - rss:
+      match_path: "blog/posts/.*"
+      date_from_meta:
+        as_creation: "date"
+        as_update: "git"
+      categories:
+        - categories
+        - tags 
 
 markdown_extensions: #详见https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown-extensions/ 和 https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown/
   - abbr
