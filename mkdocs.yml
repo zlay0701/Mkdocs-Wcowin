@@ -2,7 +2,7 @@
 #[Info]
 
 site_name: Mkdocs中文教程 #your site name 显示在左上角
-site_url: http://wcowin.work/Mkdocs-Wcowin
+site_url: http://wcowin.work/
 site_description: Content and ambitious, gentle yet firm.
 site_author: 王科文(Wcowin) # your name
 #[UI]
