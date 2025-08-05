@@ -140,7 +140,17 @@ extra:
   #   description: >-
   #     我们也使用cookies来识别您的重复访问和偏好来衡量我们文档的有效性以及用户是否找到他们要找的东西。
   #     如果你同意,你可以帮助我们让我们的网站更好
-
+  exclude_categories: # 对应 categories.py
+    dirs:          # 排除整个目录（相对docs/的路径）
+      - "blog/category/"   
+      - "blog/archive/"
+    files:         # 排除特定文件（相对docs/的路径）
+      - "index.md"
+      - "blog/index.md"
+      - "categories.md"
+      - "tag.md"
+    patterns:      # 按模式排除（支持通配符*）
+      # - "*_temp.md"  # 排除临时文件（如xxx_temp.md）
 plugins:
   - ai-summary:
       ai_service: "glm"  # or "openai", "gemini", "glm"
@@ -156,6 +166,7 @@ plugins:
         - about/
         - index.md
         - tag.md
+        - categories.md
         - blog/posts/update.md
         - blog/category/
         - blog/posts/
@@ -189,6 +200,7 @@ plugins:
       exclude:
         - index.md
         - tag.md
+        - categories.md
         - liuyanban.md
         - blog/posts/update.md
         - blog/posts/wkw.md
@@ -200,6 +212,7 @@ plugins:
       exclude:
         # - index.md
         - tag.md
+        - categories.md
         - liuyanban.md
         - blog/posts/update.md
         - blog/posts/wkw.md
@@ -308,3 +321,4 @@ hooks:
   # - docs/overrides/hooks/ai_summary.py
   - docs/overrides/hooks/related_posts.py
   #- docs/overrides/hooks/comments.py       # 新添加的评论系统
+  - docs/overrides/hooks/categories.py   # 分类
