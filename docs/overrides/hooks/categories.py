@@ -118,7 +118,7 @@ def on_page_markdown(markdown: str, page: Page, config: MkDocsConfig, **kwargs):
         # 添加新页面（用URL作为键，避免重复）
         categories[cat_str][page_url] = {
             "title": page.title,
-            "url": page_url
+            "url": "/"+page_url
         }
         print(f"➕ 页面 {page_url} 已添加到分类「{cat_str}」")
     
