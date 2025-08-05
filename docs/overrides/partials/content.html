@@ -1,0 +1,108 @@
+{#-
+  This file was automatically generated - do not edit
+-#}
+{% include "partials/tags.html" %}
+{% include "partials/actions.html" %}
+{% if "\x3ch1" not in page.content %}
+  <h1>{{ page.title | d(config.site_name, true)}}</h1>
+{% endif %}
+
+<!-- {{ page.url }} categories/ -->
+{% if page.meta.layout is defined and page.meta.layout =="all_categories" %}
+<!-- 分类 start -->
+{% if all_categories %}
+  <div class="categories-container">
+    {% for category, pages in all_categories.items() %}
+      <div class="category-section">
+        <!-- 移除slugify，直接使用分类名作为标题 -->
+        <h2 class="category-title">
+          {{ category }}
+        </h2>
+        <p class="category-stats">共 {{ pages | length }} 篇文档</p>
+        <ul class="category-pages">
+          {% for page in pages %}
+            <li>
+              <a href="{{ page.url }}">{{ page.title }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="no-categories">
+    <p>暂无分类数据</p>
+    <p>请在文档头部添加分类元数据，格式：</p>
+    <pre><code>---
+title: 文档标题
+categories: [分类1, 分类2]
+---</code></pre>
+  </div>
+{% endif %}
+
+<style>
+/* 分类容器样式 */
+.categories-container {
+    display: grid;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* 分类标题样式 */
+.category-title {
+    margin: 1.5rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--md-primary-fg-color);
+}
+
+/* 统计信息样式 */
+.category-stats {
+    color: var(--md-default-fg-color--secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+/* 文档列表样式 */
+.category-pages {
+    list-style: none;
+    padding-left: 0;
+}
+
+.category-pages li {
+    margin: 0.8rem 0;
+    padding-left: 1rem;
+    border-left: 3px solid var(--md-primary-fg-color--light);
+}
+
+.category-pages a {
+    text-decoration: none;
+    color: var(--md-text-link-color);
+}
+
+.category-pages a:hover {
+    text-decoration: underline;
+}
+
+/* 无分类数据样式 */
+.no-categories {
+    padding: 2rem;
+    text-align: center;
+    background-color: var(--md-background-color);
+    border-radius: 8px;
+}
+
+.no-categories pre {
+    margin: 1rem auto;
+    max-width: 600px;
+    text-align: left;
+}
+</style>
+
+<!-- 分类 end -->
+{% else %}
+    {{ page.content }}
+{% endif %}
+    
+{% include "partials/source-file.html" %}
+{% include "partials/feedback.html" %}
+{% include "partials/comments.html" %}
