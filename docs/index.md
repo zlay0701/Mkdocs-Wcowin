@@ -1,7 +1,7 @@
 ---
 hide:
-  # - navigation # 显示右
-  # - toc #显示左
+  - navigation # 隐藏左侧 侧边栏
+  - toc #隐藏右侧目录
   - footer
   - feedback
 comments: false
