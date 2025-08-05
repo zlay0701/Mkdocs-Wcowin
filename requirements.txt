@@ -23,7 +23,7 @@ requests>=2.25.0
 
 # 数据处理和分析
 pyyaml>=6.0
-hashlib-compat  # 用于内容哈希计算
+# hashlib-compat  # 用于内容哈希计算 暂时注释 部署报错
 
 # 自然语言处理 (用于您的推荐系统和阅读时间统计)
 nltk>=3.8
