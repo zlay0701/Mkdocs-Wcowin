@@ -87,10 +87,18 @@
 
   <!-- Post content -->
   <div class="md-post__content md-typeset">
-    {{ post.content }}
+    {% set more_tag = '<!-- more -->' %}
+    {% set post_more = false %}
+
+    {% if more_tag in post.content %}
+        {% set post_more = true %}
+        {{ post.content.split(more_tag)[0] | safe }}
+    {% else %}
+        {{ post.content }}
+    {% endif %}
 
     <!-- Continue reading link -->
-    {% if post.more %}
+    {% if post_more %}
       <nav class="md-post__action">
         <a href="{{ post.url | url }}">
           {{ lang.t("blog.continue") }}
