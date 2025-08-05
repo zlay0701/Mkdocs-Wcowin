@@ -23,7 +23,7 @@ requests>=2.25.0
 
 # 数据处理和分析
 pyyaml>=6.0
-# hashlib-compat  # 用于内容哈希计算 暂时注释 部署报错
+hashlib-compat  # 用于内容哈希计算
 
 # 自然语言处理 (用于您的推荐系统和阅读时间统计)
 nltk>=3.8
@@ -35,7 +35,7 @@ markupsafe>=2.1.0
 
 # AI 功能支持 (基于您的 AI Summary 功能)
 openai>=1.0.0
-# deepseek-api  # 如果使用 DeepSeek API 暂时注释 部署报错
+deepseek-api  # 如果使用 DeepSeek API
 
 # 图像处理 (如果需要)
 pillow>=9.0.0
@@ -53,7 +53,7 @@ mkdocs-rss-plugin>=1.10.0
 lxml>=4.9.0  # XML 处理
 
 # 搜索增强
-# mkdocs-search-pro # 暂时注释 部署报错
+mkdocs-search-pro
 
 # 多语言支持
 mkdocs-static-i18n
