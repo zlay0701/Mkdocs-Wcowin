@@ -184,24 +184,24 @@ extra:
   #     如果你同意,你可以帮助我们让我们的网站更好
 
 plugins:
-  - ai-summary:
-      ai_service: "glm"  # or "openai", "gemini", "glm"
-      summary_language: "zh"  # or "en"
-      cache_enabled: true
-      local_enabled: true
-      cache_expire_days: 30
-      # debug: true # 是否显示调试信息（默认：false）
-      enabled_folders:
-        - blog/    # 添加blog文件夹
-        - develop/ # 添加develop文件夹
-        # - docs/    # 保留docs文件夹
-      exclude_patterns:
-        - about/
-        - index.md
-        - tag.md
-        - blog/posts/update.md
-        - blog/category/
-        - blog/posts/
+  # - ai-summary:
+  #     ai_service: "glm"  # or "openai", "gemini", "glm"
+  #     summary_language: "zh"  # or "en"
+  #     cache_enabled: true
+  #     local_enabled: true
+  #     cache_expire_days: 30
+  #     # debug: true # 是否显示调试信息（默认：false）
+  #     enabled_folders:
+  #       - blog/    # 添加blog文件夹
+  #       - develop/ # 添加develop文件夹
+  #       # - docs/    # 保留docs文件夹
+  #     exclude_patterns:
+  #       - about/
+  #       - index.md
+  #       - tag.md
+  #       - blog/posts/update.md
+  #       - blog/category/
+  #       - blog/posts/
   - search:
       enabled: !ENV [CI, false]
       separator: '[\s\u200b\-\u3000\u3001\u3002\uFF0C\uFF0E\uFF1F\uFF01\uFF1B]+'
