@@ -53,7 +53,7 @@ mkdocs-rss-plugin>=1.10.0
 lxml>=4.9.0  # XML 处理
 
 # 搜索增强
-mkdocs-search-pro
+# mkdocs-search-pro # 暂时注释 部署报错
 
 # 多语言支持
 mkdocs-static-i18n
