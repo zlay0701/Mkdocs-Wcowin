@@ -1,3 +1,10 @@
+@import url('https://static.zeoseven.com/zsft/292/main/result.css');
+
+body {
+  font-family: "Roboto,sans-serif,ui-sans-serif,system-ui,sans-serif,'Apple Color Emoji','Segoe UI Emoji',Segoe UI Symbol,'Noto Color Emoji'", monospace, Arial, sans-serif;
+  font-weight: normal;/* lighter*/
+}
+ 
 :root>* {
   --md-primary-fg-color: #518FC1;
   --md-primary-fg-color--light: #518FC1;
