@@ -23,8 +23,11 @@ def normalize_path(path: str) -> str:
 
 def to_kebab_case(text: str) -> str:
     """
-    将文本转换为kebab-case格式，保留中文
-    规则：Hello World -> hello-world，中文和数字保留，英文转小写，特殊字符替换为连字符
+    转换为适合URL的格式：
+    - 英文转小写
+    - 空格转换为连字符（多个空格合并）
+    - 保留中文、数字和下划线
+    - 移除感叹号等URL不安全的特殊字符
     """
     if not text:
         return "uncategorized"  # 空分类的默认值
@@ -32,9 +35,9 @@ def to_kebab_case(text: str) -> str:
     # 1. 转换为小写（仅对英文有效）
     lower_text = text.lower()
     
-    # 2. 保留中文、字母、数字和空格，其他字符替换为空格
-    # 中文范围：[\u4e00-\u9fa5\u3000-\u301f\uff00-\uffef]（包含标点）
-    cleaned = re.sub(r'[^\u4e00-\u9fa5\u3000-\u301f\uff00-\uffefa-z0-9\s]', ' ', lower_text)
+    # 2. 保留中文、字母、数字、下划线和空格，其他字符（如!、?、@等）全部移除
+    # 中文范围：[\u4e00-\u9fa5]（基本汉字）
+    cleaned = re.sub(r'[^\u4e00-\u9fa5a-z0-9_\s]', '', lower_text)
     
     # 3. 多个空格合并为一个，前后空格去除，再替换为连字符
     res = re.sub(r'\s+', '-', cleaned.strip())
@@ -42,8 +45,6 @@ def to_kebab_case(text: str) -> str:
     # 处理移除后可能为空的情况
     if not res:
         return "uncategorized"
-    
-    print(text, '--------------', res)
     return res
 def on_config(config: MkDocsConfig):
     """读取过滤配置并标准化路径"""
