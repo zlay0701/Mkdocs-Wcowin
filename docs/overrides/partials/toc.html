@@ -22,4 +22,25 @@
       {% endfor %}
     </ul>
   {% endif %}
+  <!--分类页 start -->
+  {% if page.meta.layout is defined and page.meta.layout =="all_categories" %}
+    {% if all_categories %}
+      <label class="md-nav__title" for="__toc">
+        <span class="md-nav__icon md-icon"></span>
+        {{ title }}
+      </label>
+      <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+        {% for category_name, category_info in all_categories.items() %}
+          <li class="md-nav__item"></li>
+            <a href="#cat:{{ category_name }}" class="md-nav__link">
+              <span class="md-ellipsis">
+                {{ category_name }}
+              </span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endif %}
+  <!--分类页 end -->
 </nav>

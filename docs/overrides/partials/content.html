@@ -18,9 +18,9 @@
         <!-- 移除slugify，直接使用分类名作为标题 -->
         <h2 class="category-title">
           {% if category_name=="未分类" or category_name=="uncategorized" %}
-            {{ category_name }}
+            <span id="cat:{{ category_name }}" >{{ category_name }}</span>
           {% else %}
-            <a href="{{ category_info.url }}">{{ category_name }}</a>
+            <a id="cat:{{ category_name }}" href="{{ category_info.url }}">{{ category_name }}</a>
           {% endif %}
         </h2>
         <p class="category-stats">共 {{ category_info.pages | length }} 篇文档</p>
