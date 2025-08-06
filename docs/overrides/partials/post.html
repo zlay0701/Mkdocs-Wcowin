@@ -22,6 +22,7 @@
 
 <!-- Post excerpt -->
 <article class="md-post md-post--excerpt">
+  <!-- <hr style="background: linear-gradient(to right, transparent, #9ca3af, transparent);"/> -->
   <header class="md-post__header">
 
     <!-- Post authors -->
@@ -110,3 +111,22 @@
     {% endif %}
   </div>
 </article>
+
+<style>
+  /* 卡片式边框 */
+  .md-post {
+      border: none;
+      border-radius: 8px;
+      padding: 1.5rem;
+      background-color: #ffffff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  
+  .md-post:hover {
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
+  }
+  .md-post--excerpt {
+      margin-bottom: 15px;
+  }
+</style>
