@@ -13,15 +13,15 @@
 <!-- 分类 start -->
 {% if all_categories %}
   <div class="categories-container">
-    {% for category, pages in all_categories.items() %}
+    {% for category_name, category_info in all_categories.items() %}
       <div class="category-section">
         <!-- 移除slugify，直接使用分类名作为标题 -->
         <h2 class="category-title">
-          {{ category }}
+          <a href="{{ category_info.url }}">{{ category_name }}</a>
         </h2>
-        <p class="category-stats">共 {{ pages | length }} 篇文档</p>
+        <p class="category-stats">共 {{ category_info.pages | length }} 篇文档</p>
         <ul class="category-pages">
-          {% for page in pages %}
+          {% for page in category_info.pages %}
             <li>
               <a href="{{ page.url }}">{{ page.title }}</a>
             </li>

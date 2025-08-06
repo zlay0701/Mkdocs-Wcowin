@@ -1,10 +1,10 @@
 import os
 import fnmatch
+import re
 from mkdocs.structure.pages import Page
 from mkdocs.config.defaults import MkDocsConfig
 
-# 改为嵌套结构，便于去重判断：{分类名: {页面URL: 页面信息}}
-# 外层字典用分类名作为键，内层字典用页面URL作为键（确保唯一）
+# 数据结构调整为: {分类名: {"url": 分类URL, "pages": {页面URL: 页面信息}}}
 categories = {}
 exclude_config = {
     "dirs": [],
@@ -21,6 +21,30 @@ def normalize_path(path: str) -> str:
         normalized = normalized.replace("//", "/")
     return normalized
 
+def to_kebab_case(text: str) -> str:
+    """
+    将文本转换为kebab-case格式，保留中文
+    规则：Hello World -> hello-world，中文和数字保留，英文转小写，特殊字符替换为连字符
+    """
+    if not text:
+        return "uncategorized"  # 空分类的默认值
+    
+    # 1. 转换为小写（仅对英文有效）
+    lower_text = text.lower()
+    
+    # 2. 保留中文、字母、数字和空格，其他字符替换为空格
+    # 中文范围：[\u4e00-\u9fa5\u3000-\u301f\uff00-\uffef]（包含标点）
+    cleaned = re.sub(r'[^\u4e00-\u9fa5\u3000-\u301f\uff00-\uffefa-z0-9\s]', ' ', lower_text)
+    
+    # 3. 多个空格合并为一个，前后空格去除，再替换为连字符
+    res = re.sub(r'\s+', '-', cleaned.strip())
+    
+    # 处理移除后可能为空的情况
+    if not res:
+        return "uncategorized"
+    
+    print(text, '--------------', res)
+    return res
 def on_config(config: MkDocsConfig):
     """读取过滤配置并标准化路径"""
     global exclude_config
@@ -85,7 +109,7 @@ def is_excluded(page: Page) -> bool:
     return False
 
 def on_page_markdown(markdown: str, page: Page, config: MkDocsConfig, **kwargs):
-    """处理页面分类数据收集（增加去重逻辑）"""
+    """处理页面分类数据收集（增加分类URL支持和去重逻辑）"""
     if is_excluded(page):
         return markdown
     
@@ -95,52 +119,85 @@ def on_page_markdown(markdown: str, page: Page, config: MkDocsConfig, **kwargs):
     # 处理分类格式
     if not isinstance(page_categories, list):
         original_value = page_categories
-        page_categories = [str(original_value).strip() or "未分类"]
-        print(f"⚠️ 页面 {page_url} 分类格式错误（原始值：{original_value}），自动修复为：{page_categories}")
+        page_categories = [{"name": str(original_value).strip() or "未分类", "url": ""}]
+        print(f"⚠️ 页面 {page_url} 分类格式错误（原始值：{original_value}），自动修复为：[{page_categories[0]['name']}]")
     elif len(page_categories) == 0:
-        page_categories = ["未分类"]
-        print(f"✅ 页面 {page_url} 未设置分类，自动归类为：{page_categories}")
+        page_categories = [{"name": "未分类", "url": ""}]
+        print(f"✅ 页面 {page_url} 未设置分类，自动归类为：[{page_categories[0]['name']}]")
     else:
-        print(f"✅ 页面 {page_url} 的分类：{page_categories}")
+        # 统一转换为字典格式，支持字符串和字典混合输入
+        normalized_cats = []
+        for cat in page_categories:
+            if isinstance(cat, dict):
+                name = str(cat.get("name", "")).strip() or "未分类"
+                url = normalize_path(str(cat.get("url", "")))
+                normalized_cats.append({"name": name, "url": url})
+            else:
+                name = str(cat).strip() or "未分类"
+                normalized_cats.append({"name": name, "url": ""})
+        page_categories = normalized_cats
+        print(f"✅ 页面 {page_url} 的分类：{[cat['name'] for cat in page_categories]}")
     
-    # 收集分类数据（带去重判断）
+    # 收集分类数据（带去重和URL处理）
     for cat in page_categories:
-        cat_str = str(cat).strip() or "未分类"
-        # 初始化分类字典（内层用URL作为唯一键）
-        if cat_str not in categories:
-            categories[cat_str] = {}
+        cat_name = cat["name"]
+        cat_url = cat["url"]
         
-        # 检查页面URL是否已存在于当前分类中（去重核心逻辑）
-        if page_url in categories[cat_str]:
-            print(f"⚠️ 页面 {page_url} 在分类「{cat_str}」中已存在，跳过重复添加")
+        # 初始化分类字典
+        if cat_name not in categories:
+            # 自动生成分类URL：/blog/category/kebab-case名称
+            generated_url = f"/blog/category/{to_kebab_case(cat_name)}"
+            categories[cat_name] = {
+                "url": cat_url or generated_url,  # 优先使用用户指定的URL，否则使用生成的
+                "pages": {}
+            }
+        else:
+            # 处理分类URL冲突
+            existing_url = categories[cat_name]["url"]
+            if existing_url and cat_url and existing_url != cat_url:
+                print(f"⚠️ 分类「{cat_name}」URL冲突，现有: {existing_url}, 新值: {cat_url}，保留现有值")
+            # 用非空URL更新（确保优先保留已设置的URL）
+            if not existing_url:
+                # 如果现有URL为空，生成并设置URL
+                generated_url = f"/blog/category/{to_kebab_case(cat_name)}"
+                categories[cat_name]["url"] = cat_url or generated_url
+        
+        # 处理页面去重
+        pages_dict = categories[cat_name]["pages"]
+        if page_url in pages_dict:
+            print(f"⚠️ 页面 {page_url} 在分类「{cat_name}」中已存在，跳过重复添加")
             continue
         
-        # 添加新页面（用URL作为键，避免重复）
-        categories[cat_str][page_url] = {
+        # 添加新页面
+        pages_dict[page_url] = {
             "title": page.title,
-            "url": "/"+page_url
+            "url": "/" + page_url.lstrip("/")  # 确保URL格式统一
         }
-        print(f"➕ 页面 {page_url} 已添加到分类「{cat_str}」")
+        print(f"➕ 页面 {page_url} 已添加到分类「{cat_name}」")
     
     return markdown
 
 def on_env(env, config: MkDocsConfig,** kwargs):
-    """传递分类数据到模板（转换为列表格式）"""
-    # 将内层字典转换为列表（保留顺序）
+    """传递分类数据到模板（包含分类URL）"""
+    # 整理分类数据并排序
     sorted_categories = {}
-    for cat, pages_dict in sorted(categories.items()):
-        # 按URL排序（可选，确保展示顺序一致）
-        sorted_pages = sorted(pages_dict.values(), key=lambda x: x["url"])
-        sorted_categories[cat] = sorted_pages
+    for cat_name in sorted(categories.keys()):
+        cat_data = categories[cat_name]
+        # 排序页面
+        sorted_pages = sorted(cat_data["pages"].values(), key=lambda x: x["url"])
+        sorted_categories[cat_name] = {
+            "url": cat_data["url"],
+            "pages": sorted_pages
+        }
     
     env.globals["all_categories"] = sorted_categories
     
-    # 打印去重后的汇总信息
-    total_pages = sum(len(pages) for pages in sorted_categories.values())
+    # 打印汇总信息
+    total_pages = sum(len(cat["pages"]) for cat in sorted_categories.values())
     print("\n===== 分类处理汇总（去重后） =====")
     print(f"📊 参与分类的文档总数: {total_pages}")
-    for cat, pages in sorted_categories.items():
-        print(f"   分类「{cat}」包含 {len(pages)} 篇文档")
+    for cat_name, cat_data in sorted_categories.items():
+        print(f"   分类「{cat_name}」(URL: {cat_data['url']}) 包含 {len(cat_data['pages'])} 篇文档")
     print("====================================\n")
     
     return env
