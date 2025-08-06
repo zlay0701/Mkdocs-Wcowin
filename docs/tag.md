@@ -20,3 +20,11 @@ comments: false
 </div>
 
 <!-- material/tags -->
+
+<style>
+
+.md-sidebar--primary {
+  /* max-width: 1200px; */
+  opacity: 0;
+}
+</style>
