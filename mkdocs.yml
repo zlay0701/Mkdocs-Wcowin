@@ -70,7 +70,7 @@ repo_name: Mkdocs-Wcowin # 右上角的名字
 nav:
   - 主页: index.md
   - 标签: tag.md
-  - 分类: categories/
+  - 分类: categories.md
   - 留言板: liuyanban.md
   - 博客:
       - index: blog/index.md
@@ -82,6 +82,7 @@ nav:
       - 支持作者: about/zcw.md
       - 功能测试: about/test.md
   - Github: https://github.com/zlay0701
+  - tutorials: tutorials/index.md
   # - 个人简介: https://wcowin.work/Personal-Profile/#
   # https://personal-story-web-display.lovable.app/
 
@@ -143,7 +144,7 @@ extra:
   #   description: >-
   #     我们也使用cookies来识别您的重复访问和偏好来衡量我们文档的有效性以及用户是否找到他们要找的东西。
   #     如果你同意,你可以帮助我们让我们的网站更好
-  include_categories:
+  include_categories: # 对应 categories.py
     dirs:
       - "blog/"
   exclude_categories: # 对应 categories.py
