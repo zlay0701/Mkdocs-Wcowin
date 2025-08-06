@@ -1,7 +1,7 @@
 ---
 hide:
 #   - navigation # 显示右
-  - toc #显示左
+  # - toc #显示左
   - footer
 #   - feedback
 # comments: false
@@ -27,5 +27,8 @@ hide_reading_time: true
 
 .md-grid {
   /* max-width: 1200px; */
+}
+.md-sidebar--secondary{
+  opacity: 0;
 }
 </style>
