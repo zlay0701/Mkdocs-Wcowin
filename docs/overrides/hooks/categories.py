@@ -11,6 +11,10 @@ exclude_config = {
     "files": [],
     "patterns": []
 }
+# 新增包含目录配置
+include_config = {
+    "dirs": []
+}
 
 def normalize_path(path: str) -> str:
     """将路径中的反斜杠转换为正斜杠，统一路径格式"""
@@ -46,25 +50,35 @@ def to_kebab_case(text: str) -> str:
     if not res:
         return "uncategorized"
     return res
+
 def on_config(config: MkDocsConfig):
     """读取过滤配置并标准化路径"""
-    global exclude_config
-    raw_config = config.extra.get("exclude_categories", {})
+    global exclude_config, include_config
     
+    # 处理排除配置
+    raw_exclude_config = config.extra.get("exclude_categories", {})
     exclude_config["dirs"] = [
         normalize_path(dir_path) 
-        for dir_path in (raw_config.get("dirs", []) if isinstance(raw_config.get("dirs", []), list) else [])
+        for dir_path in (raw_exclude_config.get("dirs", []) if isinstance(raw_exclude_config.get("dirs", []), list) else [])
     ]
     exclude_config["files"] = [
         normalize_path(file_path) 
-        for file_path in (raw_config.get("files", []) if isinstance(raw_config.get("files", []), list) else [])
+        for file_path in (raw_exclude_config.get("files", []) if isinstance(raw_exclude_config.get("files", []), list) else [])
     ]
     exclude_config["patterns"] = [
         normalize_path(pattern) 
-        for pattern in (raw_config.get("patterns", []) if isinstance(raw_config.get("patterns", []), list) else [])
+        for pattern in (raw_exclude_config.get("patterns", []) if isinstance(raw_exclude_config.get("patterns", []), list) else [])
+    ]
+    
+    # 新增：处理包含配置
+    raw_include_config = config.extra.get("include_categories", {})
+    include_config["dirs"] = [
+        normalize_path(dir_path) 
+        for dir_path in (raw_include_config.get("dirs", []) if isinstance(raw_include_config.get("dirs", []), list) else [])
     ]
     
     print("\n===== 分类过滤规则（标准化后） =====")
+    print(f"包含目录: {include_config['dirs']}")  # 新增
     print(f"排除目录: {exclude_config['dirs']}")
     print(f"排除文件: {exclude_config['files']}")
     print(f"排除模式: {exclude_config['patterns']}")
@@ -82,6 +96,19 @@ def is_excluded(page: Page) -> bool:
     
     if not src_path:
         return False
+    
+    # 新增：包含目录过滤（白名单机制）
+    if include_config["dirs"]:
+        included = False
+        for dir_pattern in include_config["dirs"]:
+            normalized_dir = normalize_path(dir_pattern).rstrip("/") + "/"
+            if src_path.startswith(normalized_dir):
+                included = True
+                break
+        if not included:
+            print(f"❌ 不在包含目录中的文档: {src_path}")
+            print(f"   包含目录: {include_config['dirs']}")
+            return True
     
     # 1. 目录过滤
     if exclude_config["dirs"]:
@@ -109,6 +136,7 @@ def is_excluded(page: Page) -> bool:
     
     return False
 
+# 以下on_page_markdown和on_env函数保持不变
 def on_page_markdown(markdown: str, page: Page, config: MkDocsConfig, **kwargs):
     """处理页面分类数据收集（增加分类URL支持和去重逻辑）"""
     if is_excluded(page):
