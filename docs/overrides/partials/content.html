@@ -12,44 +12,44 @@ This file was automatically generated - do not edit
 {% if page.meta.layout is defined and page.meta.layout =="all_categories" %}
   <!-- {{ page.url }} categories/ -->
   {% if all_categories %}
-  <div class="categories-container">
-    {% for category_name, category_info in all_categories.items() %}
-    <div class="category-section">
-      <!-- 移除slugify，直接使用分类名作为标题 -->
-      <h2 class="category-title">
+    <div class="categories-container">
+      {% for category_name, category_info in all_categories.items() %}
+      <div class="category-section">
+        <!-- 移除slugify，直接使用分类名作为标题 -->
+        <h2 class="category-title">
+          {% if category_name=="未分类" or category_name=="uncategorized" %}
+          <span id="cat:{{ category_name }}">{{ category_name }}</span>
+          {% else %}
+          <a id="cat:{{ category_name }}" href="{{ category_info.url }}">{{ category_name }}</a>
+          {% endif %}
+        </h2>
+        <p class="category-stats">共 {{ category_info.pages | length }} 篇文档</p>
         {% if category_name=="未分类" or category_name=="uncategorized" %}
-        <span id="cat:{{ category_name }}">{{ category_name }}</span>
+        <ul class="category-pages">
+          {% for page in category_info.pages %}
+          <li>
+            <a href="{{ page.url }}">{{ page.title }}</a>
+          </li>
+          {% endfor %}
+        </ul>
         {% else %}
-        <a id="cat:{{ category_name }}" href="{{ category_info.url }}">{{ category_name }}</a>
+        <nav class="md-post__action">
+          <a href="{{ category_info.url }}">查看全部</a>
+        </nav>
         {% endif %}
-      </h2>
-      <p class="category-stats">共 {{ category_info.pages | length }} 篇文档</p>
-      {% if category_name=="未分类" or category_name=="uncategorized" %}
-      <ul class="category-pages">
-        {% for page in category_info.pages %}
-        <li>
-          <a href="{{ page.url }}">{{ page.title }}</a>
-        </li>
-        {% endfor %}
-      </ul>
-      {% else %}
-      <nav class="md-post__action">
-        <a href="{{ category_info.url }}">查看全部</a>
-      </nav>
-      {% endif %}
 
+      </div>
+      {% endfor %}
     </div>
-    {% endfor %}
-  </div>
   {% else %}
-  <div class="no-categories">
-    <p>暂无分类数据</p>
-    <p>请在文档头部添加分类元数据，格式：</p>
-    <pre><code>---
-  title: 文档标题
-  categories: [分类1, 分类2]
-  ---</code></pre>
-  </div>
+    <div class="no-categories">
+      <p>暂无分类数据</p>
+      <p>请在文档头部添加分类元数据，格式：</p>
+      <pre><code>---
+    title: 文档标题
+    categories: [分类1, 分类2]
+    ---</code></pre>
+    </div>
   {% endif %}
   <style>
     /* 分类容器样式 */
