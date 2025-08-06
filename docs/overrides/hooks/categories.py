@@ -4,6 +4,9 @@ import re
 from mkdocs.structure.pages import Page
 from mkdocs.config.defaults import MkDocsConfig
 
+# 新增debug参数控制打印输出
+debug = False  # 设置为True开启调试打印，False关闭
+
 # 数据结构调整为: {分类名: {"url": 分类URL, "pages": {页面URL: 页面信息}}}
 categories = {}
 exclude_config = {
@@ -53,7 +56,10 @@ def to_kebab_case(text: str) -> str:
 
 def on_config(config: MkDocsConfig):
     """读取过滤配置并标准化路径"""
-    global exclude_config, include_config
+    global exclude_config, include_config, debug  # 引用全局debug变量
+    
+    # 从配置中读取debug模式（如果有），否则使用默认值
+    debug = config.extra.get("categories_debug", debug)
     
     # 处理排除配置
     raw_exclude_config = config.extra.get("exclude_categories", {})
@@ -77,12 +83,14 @@ def on_config(config: MkDocsConfig):
         for dir_path in (raw_include_config.get("dirs", []) if isinstance(raw_include_config.get("dirs", []), list) else [])
     ]
     
-    print("\n===== 分类过滤规则（标准化后） =====")
-    print(f"包含目录: {include_config['dirs']}")  # 新增
-    print(f"排除目录: {exclude_config['dirs']}")
-    print(f"排除文件: {exclude_config['files']}")
-    print(f"排除模式: {exclude_config['patterns']}")
-    print("====================================\n")
+    # 仅在debug模式下打印
+    if debug:
+        print("\n===== 分类过滤规则（标准化后） =====")
+        print(f"包含目录: {include_config['dirs']}")
+        print(f"排除目录: {exclude_config['dirs']}")
+        print(f"排除文件: {exclude_config['files']}")
+        print(f"排除模式: {exclude_config['patterns']}")
+        print("====================================\n")
     return config
 
 def is_excluded(page: Page) -> bool:
@@ -106,8 +114,10 @@ def is_excluded(page: Page) -> bool:
                 included = True
                 break
         if not included:
-            print(f"❌ 不在包含目录中的文档: {src_path}")
-            print(f"   包含目录: {include_config['dirs']}")
+            # 仅在debug模式下打印
+            if debug:
+                print(f"❌ 不在包含目录中的文档: {src_path}")
+                print(f"   包含目录: {include_config['dirs']}")
             return True
     
     # 1. 目录过滤
@@ -115,14 +125,18 @@ def is_excluded(page: Page) -> bool:
         for dir_pattern in exclude_config["dirs"]:
             normalized_dir = normalize_path(dir_pattern).rstrip("/") + "/"
             if src_path.startswith(normalized_dir):
-                print(f"❌ 排除目录中的文档: {src_path}")
-                print(f"   匹配规则: 目录 '{normalized_dir}'")
+                # 仅在debug模式下打印
+                if debug:
+                    print(f"❌ 排除目录中的文档: {src_path}")
+                    print(f"   匹配规则: 目录 '{normalized_dir}'")
                 return True
     
     # 2. 文件过滤
     if exclude_config["files"] and src_path in exclude_config["files"]:
-        print(f"❌ 排除特定文件: {src_path}")
-        print(f"   匹配规则: 文件列表")
+        # 仅在debug模式下打印
+        if debug:
+            print(f"❌ 排除特定文件: {src_path}")
+            print(f"   匹配规则: 文件列表")
         return True
     
     # 3. 模式过滤
@@ -130,8 +144,10 @@ def is_excluded(page: Page) -> bool:
         for pattern in exclude_config["patterns"]:
             normalized_pattern = normalize_path(pattern)
             if normalized_pattern and fnmatch.fnmatch(src_path, normalized_pattern):
-                print(f"❌ 排除模式匹配的文档: {src_path}")
-                print(f"   匹配规则: 模式 '{normalized_pattern}'")
+                # 仅在debug模式下打印
+                if debug:
+                    print(f"❌ 排除模式匹配的文档: {src_path}")
+                    print(f"   匹配规则: 模式 '{normalized_pattern}'")
                 return True
     
     return False
@@ -149,10 +165,14 @@ def on_page_markdown(markdown: str, page: Page, config: MkDocsConfig, **kwargs):
     if not isinstance(page_categories, list):
         original_value = page_categories
         page_categories = [{"name": str(original_value).strip() or "未分类", "url": ""}]
-        print(f"⚠️ 页面 {page_url} 分类格式错误（原始值：{original_value}），自动修复为：[{page_categories[0]['name']}]")
+        # 仅在debug模式下打印
+        if debug:
+            print(f"⚠️ 页面 {page_url} 分类格式错误（原始值：{original_value}），自动修复为：[{page_categories[0]['name']}]")
     elif len(page_categories) == 0:
         page_categories = [{"name": "未分类", "url": ""}]
-        print(f"✅ 页面 {page_url} 未设置分类，自动归类为：[{page_categories[0]['name']}]")
+        # 仅在debug模式下打印
+        if debug:
+            print(f"✅ 页面 {page_url} 未设置分类，自动归类为：[{page_categories[0]['name']}]")
     else:
         # 统一转换为字典格式，支持字符串和字典混合输入
         normalized_cats = []
@@ -165,7 +185,9 @@ def on_page_markdown(markdown: str, page: Page, config: MkDocsConfig, **kwargs):
                 name = str(cat).strip() or "未分类"
                 normalized_cats.append({"name": name, "url": ""})
         page_categories = normalized_cats
-        print(f"✅ 页面 {page_url} 的分类：{[cat['name'] for cat in page_categories]}")
+        # 仅在debug模式下打印
+        if debug:
+            print(f"✅ 页面 {page_url} 的分类：{[cat['name'] for cat in page_categories]}")
     
     # 收集分类数据（带去重和URL处理）
     for cat in page_categories:
@@ -184,7 +206,9 @@ def on_page_markdown(markdown: str, page: Page, config: MkDocsConfig, **kwargs):
             # 处理分类URL冲突
             existing_url = categories[cat_name]["url"]
             if existing_url and cat_url and existing_url != cat_url:
-                print(f"⚠️ 分类「{cat_name}」URL冲突，现有: {existing_url}, 新值: {cat_url}，保留现有值")
+                # 仅在debug模式下打印
+                if debug:
+                    print(f"⚠️ 分类「{cat_name}」URL冲突，现有: {existing_url}, 新值: {cat_url}，保留现有值")
             # 用非空URL更新（确保优先保留已设置的URL）
             if not existing_url:
                 # 如果现有URL为空，生成并设置URL
@@ -194,7 +218,9 @@ def on_page_markdown(markdown: str, page: Page, config: MkDocsConfig, **kwargs):
         # 处理页面去重
         pages_dict = categories[cat_name]["pages"]
         if page_url in pages_dict:
-            print(f"⚠️ 页面 {page_url} 在分类「{cat_name}」中已存在，跳过重复添加")
+            # 仅在debug模式下打印
+            if debug:
+                print(f"⚠️ 页面 {page_url} 在分类「{cat_name}」中已存在，跳过重复添加")
             continue
         
         # 添加新页面
@@ -202,7 +228,9 @@ def on_page_markdown(markdown: str, page: Page, config: MkDocsConfig, **kwargs):
             "title": page.title,
             "url": "/" + page_url.lstrip("/")  # 确保URL格式统一
         }
-        print(f"➕ 页面 {page_url} 已添加到分类「{cat_name}」")
+        # 仅在debug模式下打印
+        if debug:
+            print(f"➕ 页面 {page_url} 已添加到分类「{cat_name}」")
     
     return markdown
 
@@ -221,12 +249,13 @@ def on_env(env, config: MkDocsConfig,** kwargs):
     
     env.globals["all_categories"] = sorted_categories
     
-    # 打印汇总信息
-    total_pages = sum(len(cat["pages"]) for cat in sorted_categories.values())
-    print("\n===== 分类处理汇总（去重后） =====")
-    print(f"📊 参与分类的文档总数: {total_pages}")
-    for cat_name, cat_data in sorted_categories.items():
-        print(f"   分类「{cat_name}」(URL: {cat_data['url']}) 包含 {len(cat_data['pages'])} 篇文档")
-    print("====================================\n")
+    # 仅在debug模式下打印汇总信息
+    if debug:
+        total_pages = sum(len(cat["pages"]) for cat in sorted_categories.values())
+        print("\n===== 分类处理汇总（去重后） =====")
+        print(f"📊 参与分类的文档总数: {total_pages}")
+        for cat_name, cat_data in sorted_categories.items():
+            print(f"   分类「{cat_name}」(URL: {cat_data['url']}) 包含 {len(cat_data['pages'])} 篇文档")
+        print("====================================\n")
     
     return env
