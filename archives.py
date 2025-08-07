@@ -101,7 +101,7 @@ def generate_yearly_stats():
     markdown += "|------|----------|\n"
     
     for year in sorted_years:
-        markdown += f"| [{year}年](/blog/archive/{year}/) | {year_counts[year]} |\n"
+        markdown += f"| [{year}年](blog/archive/{year}.md) | {year_counts[year]} |\n"
     
     return markdown
 

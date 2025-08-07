@@ -88,7 +88,7 @@ def generate_blog_list():
             'title': metadata.get('title', f'未命名文章：{md_file.stem}'),
             'date': unify_date_type(metadata.get('date', '')),
             'summary': metadata.get('summary', '无摘要'),
-            'path': "/blog/"+str(md_file.stem),
+            'path': "../../"+str(relative_path),
             'tags': tags  # 新增标签字段
         })
     
@@ -132,7 +132,7 @@ def generate_blog_list():
         markdown += "date: 2025-01-30 19:13:23\n"
         markdown += "comments: false\n"
         markdown += "---\n\n"
-        markdown += f"### [全部标签](/tags)\n\n"
+        markdown += f"### [全部标签](../../tags.md)\n\n"
         tag_posts = tags_dict[tag]
         for post in tag_posts:
             markdown += f"#### [{post['date']}] [{post['title']}]({post['path']})\n"
