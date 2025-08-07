@@ -80,10 +80,35 @@ def generate_category_stats():
     
     for category in sorted_categories:
         # 分类页面链接（根据实际站点结构调整）
-        markdown += f"| [{category}](/blog/categories/{category}/) | {category_counts[category]} |\n"
+        markdown += f"| [{category}](/blog/category/{to_kebab_case(category)}/) | {category_counts[category]} |\n"
     
     return markdown
 
+def to_kebab_case(text: str) -> str:
+    """
+    转换为适合URL的格式：
+    - 英文转小写
+    - 空格转换为连字符（多个空格合并）
+    - 保留中文、数字和下划线
+    - 移除感叹号等URL不安全的特殊字符
+    """
+    if not text:
+        return "uncategorized"  # 空分类的默认值
+    
+    # 1. 转换为小写（仅对英文有效）
+    lower_text = text.lower()
+    
+    # 2. 保留中文、字母、数字、下划线和空格，其他字符（如!、?、@等）全部移除
+    # 中文范围：[\u4e00-\u9fa5]（基本汉字）
+    cleaned = re.sub(r'[^\u4e00-\u9fa5a-z0-9_\s]', '', lower_text)
+    
+    # 3. 多个空格合并为一个，前后空格去除，再替换为连字符
+    res = re.sub(r'\s+', '-', cleaned.strip())
+    
+    # 处理移除后可能为空的情况
+    if not res:
+        return "uncategorized"
+    return res
 
 # 生成分类统计页面
 with mkdocs_gen_files.open('categories.md', 'w') as f:
