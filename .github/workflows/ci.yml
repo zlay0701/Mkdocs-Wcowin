@@ -95,6 +95,9 @@ jobs:
       - run: pip install mkdocs-material 
       - run: pip install --upgrade --force-reinstall mkdocs-material
 
+      - run: pip install mkdocs-authors-plugin
+      - run: pip install mkdocs-gen-files
+
       - run: pip install mkdocs-ai-summary-wcowin
       - name: Deploy with AI Summary
         env:

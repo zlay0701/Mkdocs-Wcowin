@@ -57,3 +57,6 @@ mkdocs-search-pro
 
 # 多语言支持
 mkdocs-static-i18n
+
+mkdocs-authors-plugin
+mkdocs-gen-files
