@@ -60,3 +60,4 @@ mkdocs-static-i18n
 
 mkdocs-authors-plugin
 mkdocs-gen-files
+pypinyin
