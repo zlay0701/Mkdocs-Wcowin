@@ -88,7 +88,7 @@ def generate_blog_list():
             'title': metadata.get('title', f'未命名文章：{md_file.stem}'),
             'date': unify_date_type(metadata.get('date', '')),
             'summary': metadata.get('summary', '无摘要'),
-            'path': "/blog/"+str(md_file.stem),
+            'path': "../../"+str(relative_path),
             'tags': tags  # 新增标签字段
         })
     
