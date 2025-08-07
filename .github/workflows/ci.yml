@@ -98,6 +98,7 @@ jobs:
       - run: pip install mkdocs-authors-plugin
       - run: pip install mkdocs-gen-files
       - run: pip install pypinyin
+      - run: pip install pyyaml
 
       - run: pip install mkdocs-ai-summary-wcowin
       - name: Deploy with AI Summary
