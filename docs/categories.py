@@ -2,6 +2,8 @@ from pathlib import Path
 import re
 import mkdocs_gen_files
 from collections import defaultdict
+# 引入拼音库用于中文首字母提取（需安装：pip install pypinyin）
+from pypinyin import lazy_pinyin, Style
 
 def extract_metadata(file_path):
     """从Markdown文件中提取YAML元数据"""
@@ -36,6 +38,23 @@ def extract_metadata(file_path):
                 metadata[key] = value
     return metadata
 
+def get_first_letter(text):
+    """获取文本的首字母（支持中文和英文）"""
+    if not text:
+        return '#'  # 空字符串用#分组
+    
+    # 处理英文
+    if re.match(r'^[a-zA-Z]', text):
+        return text[0].upper()
+    
+    # 处理中文
+    pinyin = lazy_pinyin(text[0], style=Style.FIRST_LETTER)
+    if pinyin and pinyin[0].isalpha():
+        return pinyin[0].upper()
+    
+    # 其他情况（数字、符号等）
+    return '#'
+
 def generate_category_stats():
     # 博客文章存放目录
     blog_dir = Path('docs/blog/posts')
@@ -62,11 +81,30 @@ def generate_category_stats():
             for category in categories:
                 category_counts[category] += 1
     
-    # 按分类名称A-Z排序（"未分类"排在最后）
-    sorted_categories = sorted(
-        category_counts.keys(),
-        key=lambda x: x if x != '未分类' else 'zzzzz'  # 确保"未分类"在最后
+    # 按首字母分组
+    groups = defaultdict(list)
+    for category in category_counts:
+        if category == '未分类':
+            groups['未分类'].append((category, category_counts[category]))
+        else:
+            first_letter = get_first_letter(category)
+            groups[first_letter].append((category, category_counts[category]))
+    
+    # 对每个分组内的分类按名称排序
+    for key in groups:
+        groups[key].sort(key=lambda x: x[0])  # 按分类名称排序
+    
+    # 对分组键进行排序（字母在前，#在后，最后是未分类）
+    sorted_group_keys = sorted(
+        [k for k in groups.keys() if k not in ('未分类', '#')],
+        key=lambda x: x
     )
+    # 添加#分组（如果有内容）
+    if '#' in groups and groups['#']:
+        sorted_group_keys.append('#')
+    # 添加未分类到最后
+    if '未分类' in groups and groups['未分类']:
+        sorted_group_keys.append('未分类')
     
     # 生成Markdown内容
     markdown = "---\n"
@@ -75,12 +113,24 @@ def generate_category_stats():
     markdown += "comments: false\n"
     markdown += "---\n\n"
     
-    markdown += "| 分类 | 文章总数 |\n"
-    markdown += "|------|----------|\n"
+    # 添加导航锚点
+    markdown += "## 分类导航\n"
+    markdown += " | ".join([f"[{key}](#{key.lower()})" for key in sorted_group_keys]) + "\n\n"
     
-    for category in sorted_categories:
-        # 分类页面链接（根据实际站点结构调整）
-        markdown += f"| [{category}](/blog/category/{to_kebab_case(category)}/) | {category_counts[category]} |\n"
+    # 按分组生成内容，每个字母一个表格
+    for group_key in sorted_group_keys:
+        # 添加分组标题和锚点
+        markdown += f"### <a id='{group_key.lower()}'></a>{group_key}\n\n"
+        
+        # 为每个分组创建独立表格
+        markdown += "| 分类 | 文章总数 |\n"
+        markdown += "|------|----------|\n"
+        
+        # 填充表格内容
+        for category, count in groups[group_key]:
+            markdown += f"| [{category}](/blog/category/{to_kebab_case(category)}/) | {count} |\n"
+        
+        markdown += "\n"  # 分组间增加空行
     
     return markdown
 
