@@ -120,7 +120,7 @@ def generate_category_stats():
     # 按分组生成内容，每个字母一个表格
     for group_key in sorted_group_keys:
         # 添加分组标题和锚点
-        markdown += f"### <a id='{group_key.lower()}'></a>{group_key}\n\n"
+        markdown += f"### <a id='{group_key.lower()}'>{group_key}</a>\n\n"
         
         # 为每个分组创建独立表格
         markdown += "| 分类 | 文章总数 |\n"
