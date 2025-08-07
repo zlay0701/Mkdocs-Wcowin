@@ -251,7 +251,7 @@ plugins:
         - tags 
   - gen-files:
       scripts:
-        - ./gen-files/gen_pages.py
+        - gen_pages.py
   - authors: # https://github.com/thomaszwagerman/mkdocs-authors-plugin
       authors_file: docs/blog/.authors.yml
 
