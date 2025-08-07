@@ -66,13 +66,18 @@ def generate_blog_list():
         metadata = extract_metadata(md_file)
         relative_path = md_file.relative_to('docs')
         # print('------------啊啊啊---------', "/"+str(relative_path))
+        tags = metadata.get('tags', [])
+        tags = [tag for tag in tags if tag.strip()]
+        # 若过滤后仍为空，则设置默认标签['无标签']
+        if not tags:
+            tags = ['无标签']
         # 收集必要信息（包含标签）
         posts.append({
             'title': metadata.get('title', f'未命名文章：{md_file.stem}'),
             'date': metadata.get('date', ''),
             'summary': metadata.get('summary', '无摘要'),
             'path': "/blog/"+str(md_file.stem),
-            'tags': metadata.get('tags', [])  # 新增标签字段
+            'tags': tags  # 新增标签字段
         })
     
     # 按日期倒序排序
