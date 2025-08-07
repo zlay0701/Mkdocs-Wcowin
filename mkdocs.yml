@@ -225,6 +225,7 @@ plugins:
         - blog/posts/update.md
         - blog/posts/wkw.md
         - about/link.md
+        - authors.md #生成的文件不存在 会读取错误
   - blog: #博客配置
       post_date_format: full #时间
       draft: true
