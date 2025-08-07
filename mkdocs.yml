@@ -227,6 +227,8 @@ plugins:
         - about/link.md
         - authors.md #生成的文件不存在 会读取错误
   - blog: #博客配置
+      blog_dir: blog
+      post_dir: "{blog}/posts"
       post_date_format: full #时间
       draft: true
       draft_if_future_date: true #自动将具有未来日期的帖子标记为草稿
