@@ -257,6 +257,7 @@ plugins:
       scripts:
         - docs/archives.py
         - docs/categories.py
+        - docs/tags.py
   - authors: # https://github.com/thomaszwagerman/mkdocs-authors-plugin
       authors_file: docs/blog/.authors.yml
 
