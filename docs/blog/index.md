@@ -9,7 +9,7 @@ hide:
 hide_reading_time: true
 ---
 
-# MyBlog
+# 博客
 <div class="grid cards" markdown>
 
 -   :material-clock-fast:{ .lg .middle } __What is Blog?__
@@ -29,6 +29,6 @@ hide_reading_time: true
   /* max-width: 1200px; */
 }
 .md-sidebar--secondary{
-  opacity: 0;
+  /* opacity: 0; */
 }
 </style>
