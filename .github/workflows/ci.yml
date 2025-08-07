@@ -99,6 +99,7 @@ jobs:
       - run: pip install mkdocs-gen-files
 
       - run: pip install mkdocs-ai-summary-wcowin
+      - run: ls-l /home/runner/work/Mkdocs-Wcowin/Mkdocs-Wcowin/gen-files
       - name: Deploy with AI Summary
         env:
           # AI摘要开关控制
