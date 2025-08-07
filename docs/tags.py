@@ -128,7 +128,7 @@ def generate_category_stats():
         
         # 填充表格内容
         for category, count in groups[group_key]:
-            markdown += f"| [{category}](/blog/category/{to_kebab_case(category)}/) | {count} |\n"
+            markdown += f"| [{category}](/blog/tags/{to_kebab_case(category)}/) | {count} |\n"
         
         markdown += "\n"  # 分组间增加空行
     
