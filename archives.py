@@ -63,5 +63,5 @@ def generate_yearly_stats():
 
 
 # 生成统计页面
-with mkdocs_gen_files.open('foo.md', 'w') as f:
+with mkdocs_gen_files.open('archives.md', 'w') as f:
     f.write(generate_yearly_stats())
