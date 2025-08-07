@@ -71,6 +71,7 @@ nav:
   - 主页: index.md
   - 标签: tag.md
   - 分类: categories.md
+  - 归档: archives.md
   - 留言板: liuyanban.md
   - 博客:
       - index: blog/index.md
