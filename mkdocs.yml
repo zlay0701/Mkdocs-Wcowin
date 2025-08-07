@@ -256,6 +256,7 @@ plugins:
   - gen-files:
       scripts:
         - docs/archives.py
+        - docs/categories.py
   - authors: # https://github.com/thomaszwagerman/mkdocs-authors-plugin
       authors_file: docs/blog/.authors.yml
 
@@ -349,4 +350,4 @@ hooks:
   # - docs/overrides/hooks/ai_summary.py
   - docs/overrides/hooks/related_posts.py
   #- docs/overrides/hooks/comments.py       # 新添加的评论系统
-  - docs/overrides/hooks/categories.py   # 分类
+  # - docs/overrides/hooks/categories.py   # 分类 暂时不使用 对应 categories.bak.md
