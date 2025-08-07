@@ -240,7 +240,7 @@ plugins:
       authors_file: "{blog}/.authors.yml" #作者信息
       authors: true
       blog_toc: true
-      authors_profiles: false # 赞助商才能用的功能
+      # authors_profiles: false # 赞助商才能用的功能
   - tags
   - rss:
       match_path: "blog/posts/.*"
