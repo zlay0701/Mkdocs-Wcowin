@@ -111,31 +111,6 @@ This file was automatically generated - do not edit
 {% endif %}
 <!-- 分类 end -->
 
- <!-- 归档 start -->
-{% if page.meta.layout is defined and page.meta.layout =="archives" %}1{{blog_archives}}1
-  {% if posts %}
-  {% endif %}
-
-  {% block container %}
-  <div class="md-content" data-md-component="content">
-    <div class="md-content__inner">
-      <header class="md-typeset">
-      </header>
-      {% for post in posts %}
-        {% include "partials/post.html" %}
-      {% endfor %}
-      {% if pagination %}
-        {% block pagination %}
-          {% include "partials/pagination.html" %}
-        {% endblock %}
-      {% endif %}
-    </div>
-  </div>
-{% endblock %}
-
-{% endif %}
-<!-- 归档 end -->
-
 {% include "partials/source-file.html" %}
 {% include "partials/feedback.html" %}
 {% include "partials/comments.html" %}
